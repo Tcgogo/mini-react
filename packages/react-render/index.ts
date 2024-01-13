@@ -23,6 +23,7 @@ export function createTextNode(nodeValue: string): VnodeProps {
         type: 'TEXT_ELMEMNT',
         props: {
             nodeValue,
+            children: [], 
         }
     }
 }
