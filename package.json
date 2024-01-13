@@ -1,0 +1,21 @@
+{
+  "name": "mini-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mr/dom": "workspace:^1.0.0",
+    "@mr/render": "workspace:^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "vite": "^5.0.11",
+    "@mr/types": "workspace:^1.0.0"
+  }
+}
