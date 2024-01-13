@@ -8,8 +8,7 @@ function App() {
       <div>
         <div>41213</div>
       </div>
-      {/* 特殊标签 createElement */}
-      {/* <header>23</header> */}
+      <header>23</header>
     </div>
   );
 }

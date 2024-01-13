@@ -1,7 +1,8 @@
 import { VnodeProps } from '@mr/types'
 
 function createDom(node: VnodeProps) {
-    return node.type === 'div' ? document.createElement(node.type) : document.createTextNode(node.props?.nodeValue);
+    
+    return node.type === 'TEXT_ELMEMNT' ?  document.createTextNode(node.props?.nodeValue) : document.createElement(node.type);
 }
 
 export function createElement(type: VnodeProps['type'], props: VnodeProps['props'], ...children): VnodeProps {
