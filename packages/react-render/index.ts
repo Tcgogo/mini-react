@@ -4,12 +4,15 @@ function createDom(node: VnodeProps) {
     return node.type === 'div' ? document.createElement(node.type) : document.createTextNode(node.props?.nodeValue);
 }
 
-export function createElement(type: VnodeProps['type'], props: VnodeProps['props'], children?: (VnodeProps | string)[]): VnodeProps {
+export function createElement(type: VnodeProps['type'], props: VnodeProps['props'], ...children): VnodeProps {
+    console.log('%c [ children ]-8', 'font-size:13px; background:pink; color:#bf2c9f;', typeof children, children)
+
+    // TODO: children 有多种数据结构需要兼容
     return {
         type,
         props: {
             ...props,
-            children: children?.map(c => typeof c === 'string' ? createTextNode(c) : c)
+            children: children.map((c) => typeof c === 'string' ? createTextNode(c) : c),
         }
     }
 }
@@ -24,6 +27,8 @@ export function createTextNode(nodeValue: string): VnodeProps {
 }
 
 export function render(node: VnodeProps, container?: any) {
+    console.log('%c [ node ]-30', 'font-size:13px; background:pink; color:#bf2c9f;', node)
+    
     const dom = createDom(node);
 
     Object.keys(node.props || {}).forEach((n) => {
