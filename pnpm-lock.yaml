@@ -11,6 +11,9 @@ importers:
       '@mr/dom':
         specifier: workspace:^1.0.0
         version: link:packages/react-dom
+      '@mr/misc':
+        specifier: workspace:^1.0.0
+        version: link:packages/react-misc
       '@mr/render':
         specifier: workspace:^1.0.0
         version: link:packages/react-render
@@ -30,7 +33,11 @@ importers:
 
   packages/react-dom: {}
 
+  packages/react-misc: {}
+
   packages/react-render: {}
+
+  packages/react-tests: {}
 
   packages/react-types: {}
 

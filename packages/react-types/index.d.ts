@@ -10,3 +10,29 @@ export interface VnodeProps {
     props?: Record<string, any>;
     children?: VnodeProps[];
 }
+
+export interface TaskProps extends VnodeProps {
+    dom: any;
+}
+
+// fiber 结构
+export interface FiberProps {
+    // 节点类型
+    type: ELEMENT_TYPE;
+    // 节点的 dom 对象
+    stateNode: any;
+    // 对于 props
+    props: any;
+    // 节点标记
+    tag: 'host_root' | 'host_component' | 'class_component' | 'function_component'
+    // 需要更改的 fiber 对象
+    effects: FiberProps[]  | null;
+    // 当前 fiber 对象要被执行的操作
+    effectTag?: string;
+    // 当前 fiber 父级 fiber
+    parent: FiberProps | null;
+    // 当前 fiber 子级 fiber
+    child: FiberProps | null;
+    // 当前 fiber 的下一个兄弟 fiber
+    sibling: FiberProps | null;
+}

@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@mr/dom": "workspace:^1.0.0",
-    "@mr/render": "workspace:^1.0.0"
+    "@mr/render": "workspace:^1.0.0",
+    "@mr/misc": "workspace:^1.0.0"
   },
   "devDependencies": {
     "@mr/types": "workspace:^1.0.0",
