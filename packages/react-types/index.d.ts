@@ -20,7 +20,7 @@ export interface FiberProps {
     // 节点类型
     type: ELEMENT_TYPE;
     // 节点的 dom 对象
-    stateNode: any;
+    stateNode: HTMLElement | Text;
     // 对于 props
     props: any;
     // 节点标记

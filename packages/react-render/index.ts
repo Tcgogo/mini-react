@@ -1,5 +1,5 @@
 import { FiberProps, TaskProps, VnodeProps } from '@mr/types'
-import { createDom, createElement, createTaskQueue, createTextNode } from '@mr/misc';
+import { commitRoot, createDom, createElement, createTaskQueue, createTextNode } from '@mr/misc';
 
 // 任务队列
 const taskQueue = createTaskQueue();
@@ -7,20 +7,33 @@ const taskQueue = createTaskQueue();
 // 当前执行的任务
 let curTask: FiberProps | null = null;
 
+// root 任务
+let rootTask: FiberProps | null = null;
+
 function workLoop(deadline: IdleDeadline) {
     // 初始化第一次任务
-    if(!curTask) {
+    if (!curTask) {
         curTask = createFirstTask()
     }
 
-    while(curTask && deadline.timeRemaining() > 1)  {
+    while (curTask && deadline.timeRemaining() > 1) {
         curTask = executeTask(curTask!);
     }
 
-    if(curTask || !taskQueue.isEmpty()) {
+
+    if (!curTask && rootTask) {
+        // 统一 append dom
+        commitRoot(rootTask);
+        rootTask = null;
+    }
+
+    if (curTask || !taskQueue.isEmpty()) {
         requestIdleCallback(workLoop)
     }
 }
+
+
+
 
 function executeTask(fiber: FiberProps) {
     let children: VnodeProps[] = fiber.props.children;
@@ -31,7 +44,8 @@ function executeTask(fiber: FiberProps) {
         // 创建dom
         const dom = createDom(child);
 
-        fiber.stateNode.append(dom);
+        // 不中途添加，最后统一添加
+        // fiber.stateNode.append(dom);
 
         // 创建 Fiber 对象
         newFiber = {
@@ -46,7 +60,7 @@ function executeTask(fiber: FiberProps) {
         }
 
         // 构建指针
-        if(index === 0) {
+        if (index === 0) {
             fiber.child = newFiber;
         } else {
             prevChild!.sibling = newFiber;
@@ -57,11 +71,11 @@ function executeTask(fiber: FiberProps) {
 
 
     // 规则：先遍历子节点，然后是兄弟节点，最后是叔叔节点
-    if(fiber.child) return fiber.child;
+    if (fiber.child) return fiber.child;
 
-    if(fiber.sibling) return fiber.sibling;
+    if (fiber.sibling) return fiber.sibling;
 
-    if(fiber.parent?.sibling) return fiber.parent?.sibling;
+    if (fiber.parent?.sibling) return fiber.parent?.sibling;
 
     return null;
 }
@@ -71,7 +85,7 @@ function executeTask(fiber: FiberProps) {
 function createFirstTask(): FiberProps {
     const task = taskQueue.pop() as TaskProps;
 
-    return {
+    rootTask = {
         type: task.type,
         stateNode: task.dom,
         props: task.props,
@@ -81,6 +95,8 @@ function createFirstTask(): FiberProps {
         parent: null,
         sibling: null,
     };
+
+    return rootTask;
 }
 
 function performWorkOfUnit() {
