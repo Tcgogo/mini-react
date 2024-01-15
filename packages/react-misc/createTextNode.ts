@@ -1,6 +1,6 @@
 import { VnodeProps } from "@mr/types";
 
-function createTextNode(nodeValue: string): VnodeProps {
+function createTextNode(nodeValue: string | number): VnodeProps {
     return {
         type: 'TEXT_ELMEMNT',
         props: {

@@ -6,7 +6,10 @@ function createElement(type: VnodeProps['type'], props: VnodeProps['props'], ...
         type,
         props: {
             ...props,
-            children: children.map((c) => typeof c === 'string' ? createTextNode(c) : c),
+            children: children.map((c) => {
+                const isTextNode = typeof c === 'string' || typeof c === 'number';
+                return isTextNode ? createTextNode(c) : c
+            }),
         }
     }
 }

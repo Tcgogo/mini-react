@@ -6,7 +6,7 @@ export enum ELEMENT_TYPE_VALUE {
 export type ELEMENT_TYPE = keyof typeof ELEMENT_TYPE_VALUE;
 
 export interface VnodeProps {
-    type: ELEMENT_TYPE;
+    type: ELEMENT_TYPE | Function;
     props?: Record<string, any>;
     children?: VnodeProps[];
 }
@@ -18,7 +18,7 @@ export interface TaskProps extends VnodeProps {
 // fiber 结构
 export interface FiberProps {
     // 节点类型
-    type: ELEMENT_TYPE;
+    type: ELEMENT_TYPE | Function;
     // 节点的 dom 对象
     stateNode: HTMLElement | Text;
     // 对于 props

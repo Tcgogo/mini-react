@@ -1,5 +1,5 @@
 import { FiberProps, TaskProps, VnodeProps } from '@mr/types'
-import { commitRoot, createDom, createElement, createTaskQueue, createTextNode } from '@mr/misc';
+import { commitRoot, createDom, createElement, createTaskQueue, createTextNode, handleFiberType } from '@mr/misc';
 
 // 任务队列
 const taskQueue = createTaskQueue();
@@ -36,11 +36,15 @@ function workLoop(deadline: IdleDeadline) {
 
 
 function executeTask(fiber: FiberProps) {
-    let children: VnodeProps[] = fiber.props.children;
+    let children: VnodeProps[] = fiber.props?.children;
     let newFiber: FiberProps | null = null;
     let prevChild: FiberProps | null = null;
 
-    children.forEach((child, index) => {
+
+    children?.forEach((child, index) => {
+
+        child = handleFiberType(child);
+
         // 创建dom
         const dom = createDom(child);
 
@@ -73,9 +77,12 @@ function executeTask(fiber: FiberProps) {
     // 规则：先遍历子节点，然后是兄弟节点，最后是叔叔节点
     if (fiber.child) return fiber.child;
 
-    if (fiber.sibling) return fiber.sibling;
-
-    if (fiber.parent?.sibling) return fiber.parent?.sibling;
+    // 需要多次回退，直到找到最近的兄弟节点
+    let nextFiber: FiberProps | null = fiber;
+    while(nextFiber) {
+        if(nextFiber.sibling) return nextFiber.sibling;
+        nextFiber = nextFiber.parent;
+    }
 
     return null;
 }
