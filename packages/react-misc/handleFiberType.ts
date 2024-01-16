@@ -9,7 +9,6 @@ function handleFiberType(child: VnodeProps) {
     if(isFunctionComp(type)) {
         // 执行函数组件，获取函数组件的 child
         child = { ...child, ...type(child.props) }
-        console.log('%c [ child ]-12', 'font-size:13px; background:pink; color:#bf2c9f;', child)
     }
 
     return child

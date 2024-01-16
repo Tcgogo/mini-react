@@ -33,8 +33,6 @@ function workLoop(deadline: IdleDeadline) {
 }
 
 
-
-
 function executeTask(fiber: FiberProps) {
     let children: VnodeProps[] = fiber.props?.children;
     let newFiber: FiberProps | null = null;
@@ -70,6 +68,7 @@ function executeTask(fiber: FiberProps) {
             prevChild!.sibling = newFiber;
         }
 
+        // 记录上次 fiber
         prevChild = newFiber;
     });
 
