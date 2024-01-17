@@ -10,6 +10,9 @@ let curTask: FiberProps | null = null;
 // root 任务
 let rootTask: FiberProps | null = null;
 
+let currentRootTask: FiberProps | null = null;
+
+
 function workLoop(deadline: IdleDeadline) {
     // 初始化第一次任务
     if (!curTask) {
@@ -24,6 +27,7 @@ function workLoop(deadline: IdleDeadline) {
     if (!curTask && rootTask) {
         // 统一 append dom
         commitRoot(rootTask);
+        currentRootTask = rootTask;
         rootTask = null;
     }
 
@@ -34,32 +38,55 @@ function workLoop(deadline: IdleDeadline) {
 
 
 function executeTask(fiber: FiberProps) {
-    console.log('%c [ fiber ]-37', 'font-size:13px; background:pink; color:#bf2c9f;', fiber)
     let children: VnodeProps[] = fiber.props?.children;
     let newFiber: FiberProps | null = null;
     let prevChild: FiberProps | null = null;
 
+    let oldFiber: FiberProps | null = fiber?.alternate?.child || null;
+
 
     children?.forEach((child, index) => {
-
         child = handleFiberType(child);
 
-        // 创建dom
-        const dom = createDom(child);
+        const isSameType = oldFiber?.type === child.type;
+        console.log('%c [ isSameType ]-52', 'font-size:13px; background:pink; color:#bf2c9f;',  oldFiber?.type)
 
-        // 不中途添加，最后统一添加
-        // fiber.stateNode.append(dom);
+        if (isSameType) {
+            newFiber = {
+                type: child.type,
+                props: child.props,
+                child: null,
+                parent: fiber,
+                sibling: null,
+                effects: [],
+                tag: 'host_component',
+                stateNode: oldFiber?.stateNode as FiberProps['stateNode'],
+                effectTag: 'Update',
+                alternate: oldFiber,
+            }
+        } else {
+            // 创建dom
+            const dom = createDom(child);
 
-        // 创建 Fiber 对象
-        newFiber = {
-            type: child.type,
-            props: child.props,
-            child: null,
-            parent: curTask,
-            sibling: null,
-            effects: [],
-            tag: 'host_component',
-            stateNode: dom
+            // 不中途添加，最后统一添加
+            // fiber.stateNode.append(dom);
+
+            // 创建 Fiber 对象
+            newFiber = {
+                type: child.type,
+                props: child.props,
+                child: null,
+                parent: curTask,
+                sibling: null,
+                effects: [],
+                tag: 'host_component',
+                stateNode: dom,
+                effectTag: 'Placement',
+            }
+        }
+
+        if (oldFiber) {
+            oldFiber = oldFiber.sibling
         }
 
         // 构建指针
@@ -79,8 +106,8 @@ function executeTask(fiber: FiberProps) {
 
     // 需要多次回退，直到找到最近的兄弟节点
     let nextFiber: FiberProps | null = fiber;
-    while(nextFiber) {
-        if(nextFiber.sibling) return nextFiber.sibling;
+    while (nextFiber) {
+        if (nextFiber.sibling) return nextFiber.sibling;
         nextFiber = nextFiber.parent;
     }
 
@@ -101,6 +128,8 @@ function createFirstTask(): FiberProps {
         child: null,
         parent: null,
         sibling: null,
+        effectTag: 'Update',
+        alternate: currentRootTask
     };
 
     return rootTask;
@@ -120,9 +149,23 @@ export function render(node: VnodeProps, container?: any) {
     performWorkOfUnit();
 };
 
+export function upadte() {
+    if (!currentRootTask) return;
+
+    // 创建任务
+    taskQueue.push({
+        ...currentRootTask,
+        dom: currentRootTask.stateNode,
+    });
+
+    performWorkOfUnit();
+};
+
+
 
 export default {
     createElement,
     createTextNode,
-    render
+    render,
+    upadte
 }

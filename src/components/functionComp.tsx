@@ -4,6 +4,7 @@ let count = 1;
 
 function onclick() {
     count++;
+    React.upadte()
 }
 
 

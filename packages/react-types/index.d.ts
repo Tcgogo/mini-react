@@ -26,13 +26,15 @@ export interface FiberProps {
     // 节点标记
     tag: 'host_root' | 'host_component' | 'class_component' | 'function_component'
     // 需要更改的 fiber 对象
-    effects: FiberProps[]  | null;
+    effects: FiberProps[] | null;
     // 当前 fiber 对象要被执行的操作
-    effectTag?: string;
+    effectTag?: 'Placement' | 'Update' | 'ChildDeletion' | 'ContentReset' | 'Ref' | 'Hydrating' | 'Visibility';
     // 当前 fiber 父级 fiber
     parent: FiberProps | null;
     // 当前 fiber 子级 fiber
     child: FiberProps | null;
     // 当前 fiber 的下一个兄弟 fiber
     sibling: FiberProps | null;
+    // old fiber
+    alternate?: FiberProps | null;
 }
