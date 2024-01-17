@@ -1,5 +1,5 @@
 import { FiberProps } from "@mr/types";
-import { updatedDom } from "./createDom";
+import { updateProps } from "@mr/misc";
 
 // 递归插入所有节点
 function commitRoot(fiber?: FiberProps | null) {
@@ -8,7 +8,7 @@ function commitRoot(fiber?: FiberProps | null) {
     const parentDom = fiber?.parent?.stateNode as HTMLElement;
 
     if(fiber.effectTag === 'Update') {
-        updatedDom(fiber.stateNode, fiber.props, fiber.alternate?.props)
+        updateProps(fiber.stateNode, fiber.props, fiber.alternate?.props)
     } else if(fiber.effectTag === 'Placement') {
         parentDom?.append(fiber.stateNode);
     }

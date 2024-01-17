@@ -49,7 +49,6 @@ function executeTask(fiber: FiberProps) {
         child = handleFiberType(child);
 
         const isSameType = oldFiber?.type === child.type;
-        console.log('%c [ isSameType ]-52', 'font-size:13px; background:pink; color:#bf2c9f;',  oldFiber?.type)
 
         if (isSameType) {
             newFiber = {
