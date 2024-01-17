@@ -34,6 +34,7 @@ function workLoop(deadline: IdleDeadline) {
 
 
 function executeTask(fiber: FiberProps) {
+    console.log('%c [ fiber ]-37', 'font-size:13px; background:pink; color:#bf2c9f;', fiber)
     let children: VnodeProps[] = fiber.props?.children;
     let newFiber: FiberProps | null = null;
     let prevChild: FiberProps | null = null;
