@@ -1,7 +1,6 @@
 import React from '@mr/render'
 import FunctionComp from './components/functionComp';
 
-
 function App() {
   return (
     <div className="App">
